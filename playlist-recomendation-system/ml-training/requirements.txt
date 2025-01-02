@@ -1,0 +1,8 @@
+numpy
+pandas
+fpgrowth_py
+# scikit-learn
+# tensorflow
+# torch
+# matplotlib
+# seaborn
