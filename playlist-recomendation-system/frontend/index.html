@@ -3,21 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Project Frontend</title>
+    <title>Playlist Recommendation System</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="text-center">
-        <h1 class="text-3xl font-bold mb-4">Welcome to My Project</h1>
-        <form id="dataForm" class="mb-4">
-            <label for="inputData" class="block text-sm font-medium text-gray-700">Input Data:</label>
-            <input type="text" id="inputData" name="inputData" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Send to Backend</button>
-        </form>
-        <button id="helloButton" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Get Hello, World!</button>
-        <button id="recommendButton" class="bg-green-500 text-white px-4 py-2 rounded">Get Recommendations</button>
-        <div id="response" class="mt-4"></div>
-        <pre id="jsonResponse" class="mt-4 bg-white p-4 rounded shadow-md text-left"></pre>
+    <div class="container mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <h1 class="text-4xl font-extrabold mb-2 text-center text-gray-800">Playlist Recommendation System</h1>
+        <p class="text-center text-gray-600 mb-6">Search for songs, add them to your playlist, and get personalized recommendations.</p>
+        <div class="flex">
+            <div class="w-1/2 p-4">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Available Songs</h2>
+                <input type="text" id="searchBar" placeholder="Search songs..." class="mb-4 p-3 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <ul id="availableSongs" class="list-disc list-inside h-64 overflow-y-scroll bg-gray-50 p-4 rounded"></ul>
+            </div>
+            <div class="w-1/2 p-4">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Your Playlist</h2>
+                <ul id="playlist" class="list-disc list-inside bg-gray-50 p-4 rounded h-64 overflow-y-scroll"></ul>
+                <button id="recommendButton" class="mt-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-600 transition duration-300">Get Recommendations</button>
+            </div>
+        </div>
+        <div id="response" class="mt-6"></div>
+        <!-- Removed JSON viewer -->
     </div>
     <script src="script.js"></script>
 </body>

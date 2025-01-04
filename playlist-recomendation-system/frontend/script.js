@@ -1,58 +1,84 @@
 const backendUrl = `http://${window.location.hostname}:${window.BACKEND_PORT || 30502}`;
+let availableSongs = [];
+let playlist = [];
 
-function sendPostRequest() {
-    const data = {
-        // Example data to send in the POST request
-        key1: 'value1',
-        key2: 'value2'
-    };
-
-    fetch(`${backendUrl}/api/endpoint`, {
+function fetchSongs() {
+    fetch(`${backendUrl}/api/songs`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        }
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
-        document.getElementById('jsonResponse').innerText = JSON.stringify(data, null, 2);
+        availableSongs = data.songs;
+        displaySongs(availableSongs);
     })
-    .catch((error) => {
-        console.error('Error:', error);
+    .catch(error => console.error('Error:', error));
+}
+
+function displaySongs(songs) {
+    const availableSongsList = document.getElementById('availableSongs');
+    availableSongsList.innerHTML = '';
+    songs.forEach(song => {
+        const li = document.createElement('li');
+        li.textContent = song;
+        li.classList.add('cursor-pointer');
+        li.addEventListener('click', () => addToPlaylist(song));
+        availableSongsList.appendChild(li);
     });
 }
 
-// document.getElementById('submit-button').addEventListener('click', (event) => {
-//     event.preventDefault();
-//     sendPostRequest();
-// });
+function addToPlaylist(song) {
+    if (!playlist.includes(song)) {
+        playlist.push(song);
+        updatePlaylist();
+    }
+}
 
-document.getElementById('helloButton').addEventListener('click', () => {
-    console.log("Hello button clicked");
-    fetch(`${backendUrl}/`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('response').innerText = data.message;
-            document.getElementById('jsonResponse').innerText = JSON.stringify(data, null, 2);
-        })
-        .catch(error => console.error('Error:', error));
-});
+function removeFromPlaylist(song) {
+    playlist = playlist.filter(item => item !== song);
+    updatePlaylist();
+}
+
+function updatePlaylist() {
+    const playlistElement = document.getElementById('playlist');
+    playlistElement.innerHTML = '';
+    playlist.forEach(song => {
+        const li = document.createElement('li');
+        li.textContent = song;
+        li.classList.add('cursor-pointer');
+        li.addEventListener('click', () => removeFromPlaylist(song));
+        playlistElement.appendChild(li);
+    });
+}
 
 document.getElementById('recommendButton').addEventListener('click', () => {
-    console.log("Recommend button clicked");
     fetch(`${backendUrl}/api/recommend`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({ songs: playlist })
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('response').innerText = `Recommendations: ${data.songs.join(', ')}`;
-        document.getElementById('jsonResponse').innerText = JSON.stringify(data, null, 2);
+        const sortedRecommendations = data.songs.sort((a, b) => b.confidence - a.confidence);
+        const recommendations = sortedRecommendations.map(song => {
+            return `<li class="mb-2">
+                        <span class="font-bold">${song.recomendation.join(', ')}</span>
+                        <span class="text-sm text-gray-600">(Confidence: ${(song.confidence * 100).toFixed(2)}%)</span>
+                    </li>`;
+        }).join('');
+        document.getElementById('response').innerHTML = `<ul class="list-disc list-inside">${recommendations}</ul>`;
     })
     .catch(error => console.error('Error:', error));
 });
+
+document.getElementById('searchBar').addEventListener('input', (event) => {
+    const query = event.target.value.toLowerCase();
+    const filteredSongs = availableSongs.filter(song => song.toLowerCase().includes(query));
+    displaySongs(filteredSongs);
+});
+
+fetchSongs();
