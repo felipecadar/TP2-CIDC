@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playlist-recommender-deployment
+  labels:
+    app: cadar-playlist-recommender
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cadar-playlist-recommender
+  template:
+    metadata:
+      labels:
+        app: cadar-playlist-recommender
+    spec:
+      containers:
+      - name: ml-training
+        image: radac98/playlist-ml-training:latest
+        ports:
+        - containerPort: 5000
+      - name: backend
+        image: radac98/playlist-backend:latest
+        ports:
+        - containerPort: 5000
+      - name: frontend
+        image: radac98/playlist-frontend:latest
+        ports:
+        - containerPort: 80
