@@ -50,4 +50,4 @@ spec:
       volumes:
       - name: data-volume
         persistentVolumeClaim:
-          claimName: cadar-spotify-pvc
+          claimName: felipechamone-spotify-pvc
