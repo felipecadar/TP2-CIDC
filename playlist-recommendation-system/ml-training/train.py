@@ -13,7 +13,6 @@ def parse():
     parser.add_argument("--run-grid-search", action="store_true")
     return parser.parse_args()
 
-
 def generate_rules(data, min_support=0.05, min_confidence=0.1):
     itemSetList = data["tracks"].tolist()
     res = fpgrowth(itemSetList, minSupRatio=min_support, minConf=min_confidence)
@@ -21,29 +20,6 @@ def generate_rules(data, min_support=0.05, min_confidence=0.1):
         return None
     rules = res[1]
     return rules
-
-
-def normalizeName(name):
-    # Turn Down for What - Official Remix -> Turn Down for What
-    # Turn Down for What - Official Remix (feat. Lil Jon) -> Turn Down for What
-    # Turn Down for What REMIX -> Turn Down for What
-    # Turn Down for What - Remix -> Turn Down for What
-    # Turn Down for What - Remix - Explicit -> Turn Down for What
-    # Turn Down for What (remix) -> Turn Down for What
-
-    # remove everything after '-'
-    name = name.split(" -")[0].strip()
-    # remove everything after '('
-    name = name.split("(")[0].strip()
-    # remove everything after 'REMIX'
-    name = name.split("REMIX")[0].strip()
-    # remove everything after 'Remix'
-    name = name.split("Remix")[0].strip()
-    # remove everything after 'remix'
-    name = name.split("remix")[0].strip()
-
-    return name
-
 
 def grid_search(args):
     min_supports = [0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.15]
@@ -66,6 +42,14 @@ def grid_search(args):
             )
     return results
 
+def recommend_songs(user_history, rules):
+    recommendations = []
+    for rule in rules:
+        antecedent, consequent, confidence = rule
+        if set(antecedent).issubset(user_history):
+            recommendations.extend(consequent)
+    recommendations = list(set(recommendations))  # Remove duplicates
+    return recommendations
 
 if __name__ == "__main__":
 
@@ -74,11 +58,7 @@ if __name__ == "__main__":
     data = pd.read_csv(args.input_dataset)
     # track_uri,album_name,album_uri,artist_name,artist_uri,duration_ms,pid,track_name
 
-    # group by playlist id and get all the tracks in each playlist
     data = data.groupby("pid")["track_name"].apply(list).reset_index(name="tracks")
-    # data["tracks"] = data["tracks"].apply(
-    #     lambda x: [normalizeName(track) for track in x]
-    # )
 
     itemSetList = data["tracks"].tolist()
 

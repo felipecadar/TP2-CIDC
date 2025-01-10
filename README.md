@@ -95,7 +95,7 @@ You should use a specific port number for your REST API to avoid conflicts with 
 > The Flask Quickstart has instructions on how to [launch a minimal Flask application](https://flask.palletsprojects.com/en/2.0.x/quickstart/#a-minimal-application). You can choose the `port` when running your Flask application by passing the `--port <number>` parameter to `flask run`. For example, user `ifs4` should use:
 > 
 >     export FLASK_APP=hello
->     flask run --port 30502
+>     flask run --port 52019
 >     
 > 
 > By default, Flask loads the application from `app.py`. If your file is in a different file, you should set the `FLASK_APP` environment variable (like in the previous example) to point to your file (do not include the `.py` extension as Flask expects a [Python module](https://docs.python.org/3.9/tutorial/modules.html) name).
@@ -126,13 +126,13 @@ You should develop a client that can generate playlist recommendation requests f
 
 Students are free to implement the client in any way. A CLI client issuing an HTTP to the REST API is sufficient; for example, you can use tools like `wget` and `curl`. Alternatively, a Web-based front-end will also be accepted and will be graded with 1 point of extra credit.
 
-> You can send a well-formed POST request to the server using the following `wget` call. The output will be written to a file called `response.out`. Note that this command sends the request to the server running on port 30502, you should change the port number to send the request to your application's port:
+> You can send a well-formed POST request to the server using the following `wget` call. The output will be written to a file called `response.out`. Note that this command sends the request to the server running on port 52019, you should change the port number to send the request to your application's port:
 > 
 >     wget --server-response \
 >        --output-document response.out \
 >        --header='Content-Type: application/json' \
 >        --post-data '{"songs": ["Yesterday", "Bohemian Rhapsody"]}' \
->        http://localhost:30502/api/recommender
+>        http://localhost:52019/api/recommender
 >     
 > 
 > Your client can be developed as a wrapper around this `wget` call.
@@ -156,7 +156,7 @@ The ML container should only contain the rule generation _code_, it should _not_
 > 
 > 1.  Make Flask listen on all addresses inside the container, including the address used to communicate with the outside world, by passing `--host=0.0.0.0` as a parameter to Flask in your `ENTRYPOINT` or `CMD`. (The `0.0.0.0` address is a special value which means "any address on this container".)
 >     
-> 2.  When [running your container](https://docs.docker.com/language/python/run-containers/#overview), forward traffic for your server's `port` into your container, so your application inside the container actually receives it. Use Docker's `--publish hostPort:containerPort` flag when running your container. `hostPort` should be the port traffic arrives at on the host; in user's `ifs4` case it is `30502` (see table above). `containerPort` should be whatever port Flask is listening on inside your container, which is `5000` by default, but you can change that by passing the `--port` parameter to Flask in your `ENTRYPOINT` or `CMD`.
+> 2.  When [running your container](https://docs.docker.com/language/python/run-containers/#overview), forward traffic for your server's `port` into your container, so your application inside the container actually receives it. Use Docker's `--publish hostPort:containerPort` flag when running your container. `hostPort` should be the port traffic arrives at on the host; in user's `ifs4` case it is `52019` (see table above). `containerPort` should be whatever port Flask is listening on inside your container, which is `5000` by default, but you can change that by passing the `--port` parameter to Flask in your `ENTRYPOINT` or `CMD`.
 >     
 > 
 > After you have built your image and run your container, you can test your server is responding by running `wget` as described above.
@@ -193,13 +193,13 @@ Write a YAML file specifying a Kubernetes [service](https://kubernetes.io/docs/c
 > 
 > You can use the files under [this repo](https://github.com/cunha/cloudcomp-argocd-k8s-predictor) for example deployment and service files. The [ArgoCD examples](https://github.com/argoproj/argocd-example-apps) directory has many other examples.
 > 
-> You can then send recommendation requests to your application by using `wget` or `curl` and using the IP address listed as the service's `cluster-ip` as the destination IP, for example (assuming the `cluster-ip` is `67.159.94.11` and `port` is `30502`):
+> You can then send recommendation requests to your application by using `wget` or `curl` and using the IP address listed as the service's `cluster-ip` as the destination IP, for example (assuming the `cluster-ip` is `67.159.94.11` and `port` is `52019`):
 > 
 >     wget --server-response \
 >         --output-document response.out \
 >         --header='Content-Type: application/json' \
 >         --post-data '{"songs": ["Yesterday", "Bohemian Rhapsody"]}' \
->         http://67.159.94.11:30502/api/recommender
+>         http://67.159.94.11:52019/api/recommender
 >     
 > 
 > Although students will deploy services in Kubernetes indirectly, using YAML files and ArgoCD, some Kubernetes commands can be useful to check and debug applications. The table below summarizes some useful Kubernetes commands. The `<namespace>` is given by the student's username on the cluster. The [`kubectl` Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) lists many other useful commands.

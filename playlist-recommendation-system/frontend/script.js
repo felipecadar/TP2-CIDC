@@ -1,4 +1,5 @@
-const backendUrl = `http://${window.location.hostname}:${window.BACKEND_PORT || 30502}`;
+const protocol = window.location.protocol;
+const backendUrl = `${protocol}//${window.location.hostname}:52019`;
 let availableSongs = [];
 let playlist = [];
 
@@ -63,14 +64,20 @@ document.getElementById('recommendButton').addEventListener('click', () => {
     })
     .then(response => response.json())
     .then(data => {
-        const sortedRecommendations = data.songs.sort((a, b) => b.confidence - a.confidence);
-        const recommendations = sortedRecommendations.map(song => {
-            return `<li class="mb-2">
-                        <span class="font-bold">${song.recomendation.join(', ')}</span>
-                        <span class="text-sm text-gray-600">(Confidence: ${(song.confidence * 100).toFixed(2)}%)</span>
-                    </li>`;
-        }).join('');
-        document.getElementById('response').innerHTML = `<ul class="list-disc list-inside">${recommendations}</ul>`;
+        if (data.songs.length === 0) {
+            const currentTime = new Date().toLocaleTimeString();
+            document.getElementById('response').innerHTML = `<p>No recommendations at this time. Current time: ${currentTime}</p>`;
+        } else {
+            console.log(data);
+            const sortedRecommendations = data.songs.sort((a, b) => b.confidence - a.confidence).slice(0, 10);
+            const recommendations = sortedRecommendations.map(song => {
+                return `<li class="mb-2">
+                    <span class="font-bold">${song.name}</span>
+                    <span class="text-sm text-gray-600">(Confidence: ${(song.confidence * 100).toFixed(2)}%)</span>
+                </li>`;
+            }).join('');
+            document.getElementById('response').innerHTML = `<ul class="list-disc list-inside">${recommendations}</ul>`;
+        }
     })
     .catch(error => console.error('Error:', error));
 });

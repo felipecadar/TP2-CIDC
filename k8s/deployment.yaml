@@ -15,15 +15,33 @@ spec:
         app: cadar-playlist-recommender
     spec:
       containers:
-      - name: ml-training
-        image: radac98/playlist-ml-training:latest
-        ports:
-        - containerPort: 5000
       - name: backend
         image: radac98/playlist-backend:latest
         ports:
-        - containerPort: 5000
+        - containerPort: 52019
+        env:
+        - name: PORT
+          value: "52019"
+        volumeMounts:
+        - name: models-volume
+          mountPath: /app/models
+        - name: datasets-volume
+          mountPath: /app/dataset
       - name: frontend
         image: radac98/playlist-frontend:latest
         ports:
         - containerPort: 80
+        env:
+        - name: BACKEND_HOST
+          value: "127.0.0.1"  # Replace with the backend hostname if needed
+        - name: BACKEND_PORT
+          value: "52019"       # Ensure it matches the backend container port
+      volumes:
+      - name: models-volume
+        hostPath:
+          path: /mnt/models  # Mounted models directory
+          type: Directory
+      - name: datasets-volume
+        hostPath:
+          path: /mnt/datasets  # Mounted datasets directory
+          type: Directory

@@ -1,0 +1,35 @@
+.
+├── README.md
+├── datasets                       # Dataset folder (used for training, mounted in Kubernetes)
+│   ├── 2023_spotify_ds1.csv
+│   ├── 2023_spotify_ds2.csv
+│   └── 2023_spotify_songs.csv
+├── models                         # Models folder (used for serving/training, mounted in Kubernetes)
+│   ├── grid_search_results.pkl
+│   └── model_2025-01-03-00-33-16.pkl
+├── download.sh                    # Script to download datasets
+├── k8s                            # Kubernetes manifests
+│   ├── deployment.yaml            # Deployment for backend/frontend
+│   ├── service.yaml               # Service definition for backend/frontend
+│   ├── pv.yaml                    # PersistentVolume for models (optional)
+│   └── pvc.yaml                   # PersistentVolumeClaim for models (optional)
+├── k8s_commands.sh                # Common Kubernetes commands for deployment/debugging
+├── playlist-recommendation-system # Main project folder
+│   ├── README.md
+│   ├── backend                    # Backend service
+│   │   ├── Dockerfile
+│   │   ├── app.py
+│   │   ├── requirements.txt
+│   │   └── run.sh
+│   ├── frontend                   # Frontend service
+│   │   ├── Dockerfile
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   ├── styles.css
+│   │   └── run.sh
+│   └── ml-training                # Training pipeline
+│       ├── Dockerfile
+│       ├── train.py
+│       ├── test.py
+│       ├── requirements.txt
+│       └── run.sh

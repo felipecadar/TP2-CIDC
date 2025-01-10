@@ -1,5 +1,10 @@
-kubectl create namespace cadar
-kubectl -n cadar apply -f /Users/cadar/Documents/Github/TP2-CIDC/playlist-recomendation-system/k8s/deployment.yaml
-kubectl -n cadar apply -f /Users/cadar/Documents/Github/TP2-CIDC/playlist-recomendation-system/k8s/service.yaml
-kubectl -n cadar get deployments
-kubectl -n cadar get services
+# kubectl delete deployment playlist-recommender-deployment
+
+# kubectl apply -f k8s/pv.yaml
+# kubectl apply -f k8s/pvc.yaml
+kubectl delete deployment playlist-recommender-deployment
+kubectl delete service playlist-recommender-service
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl get deployments
+kubectl get services

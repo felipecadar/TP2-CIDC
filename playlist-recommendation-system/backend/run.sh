@@ -6,10 +6,10 @@ DATASET_PATH="../../datasets"
 MODELS_PATH=$(realpath $MODELS_PATH)
 DATASET_PATH=$(realpath $DATASET_PATH)
 
-PORT=5000
+PORT=52019
 
 docker run --rm \
-    -p 30502:5000 \
+    -p 52019:52019 \
     -v "$MODELS_PATH":/app/models \
     -v "$DATASET_PATH":/app/dataset \
     -e PORT=$PORT \

@@ -6,11 +6,16 @@ import datetime
 import pandas as pd
 from fast_edit_distance import edit_distance
 import logging
-logging.basicConfig(level=logging.DEBUG)
+
+logging.basicConfig(
+    level=logging.DEBUG,
+)
 
 def getLatestModel():
     model_folder = '/app/models'
     model_files = os.listdir(model_folder)
+    # print all the files in the models folder for debug
+    logging.debug(f"Model files: {model_files}")
     model_files.sort()
     latest_model = model_files[-1]
     model_date = latest_model.split('.')[0].split('_')[-1]
@@ -44,31 +49,23 @@ def predict(model, playlist):
     rules = model['rules']
     used_songs = model['used_songs']
 
-    logging.debug(f"Playlist: {playlist}")
-        
-    # for each song, get the closest string in the used_songs
-    close_songs = [getClosestString(used_songs, song) for song in playlist]
-    logging.debug(f"Close songs: {close_songs}")
-    for s1, s2 in zip(playlist, close_songs):
-        if s1 != s2:
-            logging.debug(f"    {s1} -> {s2}")
-    
-    length = len(playlist)
-    model = rules.get(length, {})
-    recommendations = model.get(frozenset(close_songs), [])
-
-    # Try with individual songs if no recommendations found
-    if not recommendations:
-        for song in close_songs:
-            song_model = rules.get(1, {})
-            song_recommendations = song_model.get(frozenset([song]), [])
-            recommendations.extend(song_recommendations)
+    recommendations = []
+    for rule in rules:
+        antecedent, consequent, confidence = rule
+        if set(antecedent).issubset(playlist):
+            for song in consequent:
+                recommendations.append({
+                    'name': song,
+                    'confidence': confidence
+                })
+    # Remove duplicates while keeping the highest confidence
+    unique_recommendations = {}
+    for rec in recommendations:
+        song = rec['name']
+        if song not in unique_recommendations or rec['confidence'] > unique_recommendations[song]['confidence']:
+            unique_recommendations[song] = rec
+    return list(unique_recommendations.values())
             
-    #  get top 3 recommendations
-    # recommendations = sorted(recommendations, key=lambda x: x['confidence'], reverse=True)[:3]
-    
-    return recommendations
-
 def getClosestString(songs_search_list, song):
     closest = song
     # logging.debug(f"Searching {song} in a list of {len(songs_search_list)} songs")
@@ -80,7 +77,7 @@ def getClosestString(songs_search_list, song):
     return closest
 
 latest_model, model_date = getLatestModel()
-songs_db = pd.read_csv('/app/dataset/2023_spotify_songs.csv')['track_name'].tolist()
+# songs_db = pd.read_csv('/app/dataset/2023_spotify_songs.csv')['track_name'].tolist()
 
 #get version file
 if not os.path.exists('/app/version.txt'):
@@ -105,7 +102,7 @@ if last_model_date != model_date:
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 model = pickle.load(open(latest_model, 'rb'))
-model['rules'] = indexRules(model['rules'])
+# model['rules'] = indexRules(model['rules'])
 
 app.model = model
 logging.debug(f"[INFO] Loaded model {latest_model}")
@@ -122,7 +119,7 @@ def handle_data():
 
 @app.route('/api/songs', methods=['POST'])
 def get_songs():
-    return jsonify({"songs": songs_db}), 200
+    return jsonify({"songs": list(model['used_songs'])}), 200
 
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
@@ -138,5 +135,5 @@ def recommend():
     }), 200
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 30502))
+    port = int(os.environ.get('PORT', 52019))
     app.run(host='0.0.0.0', port=port, debug=True)
