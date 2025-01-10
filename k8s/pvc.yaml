@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: models-pvc
+  name: cadar-spotify-pvc
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi                  # Matches the PV size
+      storage: 300Mi                  # Matches the PV size

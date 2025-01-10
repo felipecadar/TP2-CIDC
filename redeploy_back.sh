@@ -4,3 +4,6 @@ docker push radac98/playlist-frontend:latest
 
 docker build -t radac98/playlist-backend:latest ./playlist-recommendation-system/backend
 docker push radac98/playlist-backend:latest
+
+docker build -t radac98/playlist-ml-training ./playlist-recommendation-system/ml-training
+docker push radac98/playlist-ml-training:latest

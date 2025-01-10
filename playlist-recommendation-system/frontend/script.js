@@ -64,6 +64,8 @@ document.getElementById('recommendButton').addEventListener('click', () => {
     })
     .then(response => response.json())
     .then(data => {
+        model_date = data.model_date;
+        document.getElementById('modelDate').innerHTML = `Model last updated on: ${model_date}`;
         if (data.songs.length === 0) {
             const currentTime = new Date().toLocaleTimeString();
             document.getElementById('response').innerHTML = `<p>No recommendations at this time. Current time: ${currentTime}</p>`;
@@ -71,10 +73,10 @@ document.getElementById('recommendButton').addEventListener('click', () => {
             console.log(data);
             const sortedRecommendations = data.songs.sort((a, b) => b.confidence - a.confidence).slice(0, 10);
             const recommendations = sortedRecommendations.map(song => {
-                return `<li class="mb-2">
-                    <span class="font-bold">${song.name}</span>
-                    <span class="text-sm text-gray-600">(Confidence: ${(song.confidence * 100).toFixed(2)}%)</span>
-                </li>`;
+            return `<li class="mb-2">
+                <span class="font-bold">${song.name}</span>
+                <span class="text-sm text-gray-600">(Confidence: ${(song.confidence * 100).toFixed(2)}%)</span>
+            </li>`;
             }).join('');
             document.getElementById('response').innerHTML = `<ul class="list-disc list-inside">${recommendations}</ul>`;
         }

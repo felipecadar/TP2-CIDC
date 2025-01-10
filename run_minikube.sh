@@ -1,12 +1,15 @@
 LOCAL_PATH_MODELS="$(pwd)/models"
 LOCAL_PATH_DATASETS="$(pwd)/datasets"
 
-echo -e "Starting minikube with the following paths mounted:\n"
-echo -e "Models: ${LOCAL_PATH_MODELS}\n"
-echo -e "Datasets: ${LOCAL_PATH_DATASETS}\n"
+mkdir -p ./volume
+FULL_PATH_VOLUME="$(pwd)/volume"
 
-minikube start --mount --cpus=4 --memory=6000 --v=8
-minikube mount ${LOCAL_PATH_MODELS}:/mnt/models &
-minikube mount ${LOCAL_PATH_DATASETS}:/mnt/datasets &
-
+minikube delete
+minikube start --mount --cpus=4 --memory=6000 --v=8 --mount --mount-string="$FULL_PATH_VOLUME:/mnt/volume"
 echo -e "Minikube started!\n"
+
+if minikube ssh "ls /mnt" | grep -q "volume"; then
+    echo "Volume creation successful!"
+else
+    echo "Volume creation failed!"
+fi

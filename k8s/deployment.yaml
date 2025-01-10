@@ -23,25 +23,31 @@ spec:
         - name: PORT
           value: "52019"
         volumeMounts:
-        - name: models-volume
-          mountPath: /app/models
-        - name: datasets-volume
-          mountPath: /app/dataset
+        - name: data-volume
+          mountPath: /app/data
       - name: frontend
         image: radac98/playlist-frontend:latest
         ports:
         - containerPort: 80
         env:
-        - name: BACKEND_HOST
-          value: "127.0.0.1"  # Replace with the backend hostname if needed
         - name: BACKEND_PORT
           value: "52019"       # Ensure it matches the backend container port
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
+      - name: ml-training
+        image: radac98/playlist-ml-training:latest
+        ports:
+        - containerPort: 52020
+        env:
+        - name: PORT
+          value: "52020"
+        - name: UPLOAD_FOLDER
+          value: "/app/data/uploads"
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
       volumes:
-      - name: models-volume
-        hostPath:
-          path: /mnt/models  # Mounted models directory
-          type: Directory
-      - name: datasets-volume
-        hostPath:
-          path: /mnt/datasets  # Mounted datasets directory
-          type: Directory
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: cadar-spotify-pvc
