@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: playlist-recommender-service
+  name: felipechamone-project2-service
 spec:
   selector:
-    app: cadar-playlist-recommender # Matches pods with this label
+    app: felipechamone-project2 # Matches pods with this label
   ports:
   - name: frontend-port    # Name for the frontend port
     protocol: TCP

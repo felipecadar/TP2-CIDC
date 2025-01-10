@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: playlist-recommender-deployment
+  name: felipechamone-project2-deployment
   labels:
-    app: cadar-playlist-recommender
+    app: felipechamone-project2
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: cadar-playlist-recommender
+      app: felipechamone-project2
   template:
     metadata:
       labels:
-        app: cadar-playlist-recommender
+        app: felipechamone-project2
     spec:
       containers:
       - name: backend
@@ -50,4 +50,4 @@ spec:
       volumes:
       - name: data-volume
         persistentVolumeClaim:
-          claimName: felipechamone-spotify-pvc
+          claimName: project2-pvc2-felipechamone
