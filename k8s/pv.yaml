@@ -9,4 +9,4 @@ spec:
     - ReadWriteMany                 # Allows multiple pods to read/write
   persistentVolumeReclaimPolicy: Retain # Keeps data after PV is released
   hostPath:
-    path: /mnt/volume
+    path: /home/felipechamone/project2-pv2

@@ -3,6 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: cadar-spotify-pvc
 spec:
+  selector:
+    matchLabels:
+      namespace: felipechamone
   accessModes:
     - ReadWriteMany
   resources:
