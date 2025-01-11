@@ -6,9 +6,9 @@ metadata:
   labels:
     type: local
 spec:
+  storageClassName: default-storage-class-felipechamone
   capacity:
     storage: 1Gi
-  storageClassName: default-storage-class
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Recycle
