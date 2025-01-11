@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=1.0.3
+VERSION=1.0.4
 
 docker build -t quay.io/radac98/playlist-frontend:$VERSION ./playlist-recommendation-system/frontend                                                
 docker push quay.io/radac98/playlist-frontend:$VERSION

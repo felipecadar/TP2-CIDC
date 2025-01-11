@@ -5,7 +5,7 @@ metadata:
   labels:
     app: felipechamone-project2
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: felipechamone-project2
@@ -16,9 +16,9 @@ spec:
     spec:
       containers:
       - name: backend
-        image: quay.io/radac98/playlist-backend:1.0.3
+        image: quay.io/radac98/playlist-backend:1.0.4
         ports:
-        - containerPort: 30746
+        - containerPort: 52019
         env:
         - name: PORT
           value: "52019"
@@ -26,22 +26,19 @@ spec:
         - name: data-volume
           mountPath: /app/data
       - name: frontend
-        image: quay.io/radac98/playlist-frontend:1.0.3
+        image: quay.io/radac98/playlist-frontend:1.0.4
         ports:
-        - containerPort: 52019
-        env:
-        - name: BACKEND_PORT
-          value: "52019"       # Ensure it matches the backend container port
+        - containerPort: 30746
         volumeMounts:
         - name: data-volume
           mountPath: /app/data
       - name: ml-training
-        image: quay.io/radac98/playlist-ml-training:1.0.3
+        image: quay.io/radac98/playlist-ml-training:1.0.4
         ports:
         - containerPort: 30747
         env:
         - name: PORT
-          value: "52020"
+          value: "30747"
         - name: UPLOAD_FOLDER
           value: "/app/data/uploads"
         volumeMounts:

@@ -8,12 +8,12 @@ spec:
   ports:
   - name: frontend-port    # Name for the frontend port
     protocol: TCP
-    port: 52019               # Frontend port
-    targetPort: 52019         # Matches the frontend container
+    port: 30746               # Frontend port
+    targetPort: 30746         # Matches the frontend container
   - name: backend-port     # Name for the backend/ML training port
     protocol: TCP
-    port: 30746            # Backend/ML port
-    targetPort: 30746      # Matches the backend or ML container
+    port: 52019            # Backend/ML port
+    targetPort: 52019      # Matches the backend or ML container
   - name: training-port    # Name for the training website port
     protocol: TCP
     port: 30747            # Training website port
