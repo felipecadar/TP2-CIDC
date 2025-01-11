@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: project2-pvc2-felipechamone
 spec:
+  storageClassName: default-storage-class-felipechamone
   selector:
     matchLabels:
       namespace: felipechamone
