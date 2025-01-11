@@ -2,25 +2,13 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pickle
 import os
-import datetime
-import pandas as pd
-from fast_edit_distance import edit_distance
 import logging
 import time
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-import subprocess
 
 logging.basicConfig(
     level=logging.INFO,
 )
 
-def increase_inotify_limit():
-    try:
-        subprocess.run(['sysctl', '-w', 'fs.inotify.max_user_watches=524288'], check=True)
-        logging.info("[INFO] Increased inotify watch limit")
-    except subprocess.CalledProcessError as e:
-        logging.error(f"[ERROR] Failed to increase inotify watch limit: {e}")
 
 def getLatestModel():
     model_folder = '/app/data/models'
@@ -79,28 +67,25 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 # model = pickle.load(open(latest_model, 'rb'))
 
-class ModelFileHandler(FileSystemEventHandler):
-    def __init__(self, app):
-        self.app = app
+def start_model_monitor(app, interval=10):
+    def monitor():
+        while True:
+            try:
+                latest_model, model_date = getLatestModel()
+                if not hasattr(app, 'model_date') or app.model_date != model_date:
+                    app.model = pickle.load(open(latest_model, 'rb'))
+                    app.model_date = model_date
+                    logging.info(f"[INFO] Updated model to {latest_model}")
+            except Exception as e:
+                logging.error(f"[ERROR] Failed to update model: {e}")
+            time.sleep(interval)
 
-    def on_created(self, event):
-        if event.src_path.endswith('.pkl'):
-            logging.info(f"New model detected: {event.src_path}")
-            self.update_model()
-
-    def update_model(self):
-        latest_model, model_date = getLatestModel()
-        self.app.model = pickle.load(open(latest_model, 'rb'))
-        self.app.model_date = model_date
-        logging.info(f"[INFO] Updated model to {latest_model}")
-
-def start_model_monitor(app):
-    event_handler = ModelFileHandler(app)
-    observer = Observer()
-    observer.schedule(event_handler, path='/app/data/models', recursive=False)
-    observer.start()
+    from threading import Thread
+    monitor_thread = Thread(target=monitor)
+    monitor_thread.daemon = True
+    monitor_thread.start()
     logging.info("[INFO] Started model monitor")
-    return observer
+    return monitor_thread
 
 @app.route('/')
 def home():
@@ -136,11 +121,9 @@ def recommend():
     }), 200
 
 if __name__ == '__main__':
-    increase_inotify_limit()
     port = int(os.environ.get('PORT', 30746))
-    observer = start_model_monitor(app)
+    monitor_thread = start_model_monitor(app)
     try:
         app.run(host='0.0.0.0', port=port, debug=True)
     finally:
-        observer.stop()
-        observer.join()
+        monitor_thread.join()
