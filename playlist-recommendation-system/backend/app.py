@@ -9,10 +9,18 @@ import logging
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+import subprocess
 
 logging.basicConfig(
     level=logging.INFO,
 )
+
+def increase_inotify_limit():
+    try:
+        subprocess.run(['sysctl', '-w', 'fs.inotify.max_user_watches=524288'], check=True)
+        logging.info("[INFO] Increased inotify watch limit")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"[ERROR] Failed to increase inotify watch limit: {e}")
 
 def getLatestModel():
     model_folder = '/app/data/models'
@@ -128,6 +136,7 @@ def recommend():
     }), 200
 
 if __name__ == '__main__':
+    increase_inotify_limit()
     port = int(os.environ.get('PORT', 30746))
     observer = start_model_monitor(app)
     try:
