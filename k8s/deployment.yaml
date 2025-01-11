@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: quay.io/radac98/playlist-backend:1.0.4
+        image: quay.io/radac98/playlist-backend:1.0.5
         ports:
         - containerPort: 52019
         env:
@@ -26,14 +26,14 @@ spec:
         - name: data-volume
           mountPath: /app/data
       - name: frontend
-        image: quay.io/radac98/playlist-frontend:1.0.4
+        image: quay.io/radac98/playlist-frontend:1.0.5
         ports:
         - containerPort: 30746
         volumeMounts:
         - name: data-volume
           mountPath: /app/data
       - name: ml-training
-        image: quay.io/radac98/playlist-ml-training:1.0.4
+        image: quay.io/radac98/playlist-ml-training:1.0.5
         ports:
         - containerPort: 30747
         env:
