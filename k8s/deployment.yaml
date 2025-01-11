@@ -18,7 +18,7 @@ spec:
       - name: backend
         image: quay.io/radac98/playlist-backend:1.0.0
         ports:
-        - containerPort: 52019
+        - containerPort: 30746
         env:
         - name: PORT
           value: "52019"
@@ -28,7 +28,7 @@ spec:
       - name: frontend
         image: quay.io/radac98/playlist-frontend:1.0.0
         ports:
-        - containerPort: 80
+        - containerPort: 52019
         env:
         - name: BACKEND_PORT
           value: "52019"       # Ensure it matches the backend container port
@@ -38,7 +38,7 @@ spec:
       - name: ml-training
         image: quay.io/radac98/playlist-ml-training:1.0.0
         ports:
-        - containerPort: 52020
+        - containerPort: 30747
         env:
         - name: PORT
           value: "52020"

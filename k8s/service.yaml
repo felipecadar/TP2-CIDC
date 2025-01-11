@@ -8,14 +8,14 @@ spec:
   ports:
   - name: frontend-port    # Name for the frontend port
     protocol: TCP
-    port: 80               # Frontend port
-    targetPort: 80         # Matches the frontend container
+    port: 52019               # Frontend port
+    targetPort: 52019         # Matches the frontend container
   - name: backend-port     # Name for the backend/ML training port
     protocol: TCP
-    port: 52019            # Backend/ML port
-    targetPort: 52019      # Matches the backend or ML container
+    port: 30746            # Backend/ML port
+    targetPort: 30746      # Matches the backend or ML container
   - name: training-port    # Name for the training website port
     protocol: TCP
-    port: 52020            # Training website port
-    targetPort: 52020      # Matches the training container
+    port: 30747            # Training website port
+    targetPort: 30747      # Matches the training container
   type: LoadBalancer       # Use with cloud or load balancer support

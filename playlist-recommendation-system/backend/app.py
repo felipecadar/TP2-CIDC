@@ -128,7 +128,7 @@ def recommend():
     }), 200
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 52019))
+    port = int(os.environ.get('PORT', 30746))
     observer = start_model_monitor(app)
     try:
         app.run(host='0.0.0.0', port=port, debug=True)

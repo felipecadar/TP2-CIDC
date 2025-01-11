@@ -1,5 +1,5 @@
 const protocol = window.location.protocol;
-const backendUrl = `${protocol}//${window.location.hostname}:52019`;
+const backendUrl = `${protocol}//${window.location.hostname}:30746`;
 let availableSongs = [];
 let playlist = [];
 
