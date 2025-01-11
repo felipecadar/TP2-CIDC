@@ -11,4 +11,4 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 300Mi                  # Matches the PV size
+      storage: 1Gi                  # Matches the PV size
