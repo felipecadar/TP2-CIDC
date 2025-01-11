@@ -28,7 +28,7 @@ spec:
       - name: frontend
         image: quay.io/radac98/playlist-frontend:1.0.5
         ports:
-        - containerPort: 30746
+        - containerPort: 80
         volumeMounts:
         - name: data-volume
           mountPath: /app/data
